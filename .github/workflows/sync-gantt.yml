@@ -8,6 +8,9 @@ on:
   # Permite ejecución manual desde GitHub Actions
   workflow_dispatch:
 
+  repository_dispatch:
+    types: [sync-trigger]
+
 jobs:
   sync-gantt:
     runs-on: ubuntu-latest
