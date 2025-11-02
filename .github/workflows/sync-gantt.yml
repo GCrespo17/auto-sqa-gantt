@@ -1,0 +1,70 @@
+name: Sincronizar Gantt ClickUp -> Confluence
+
+on:
+  # Ejecución programada cada 5 horas
+  schedule:
+    - cron: '0 */5 * * *'
+  
+  # Permite ejecución manual desde GitHub Actions
+  workflow_dispatch:
+
+jobs:
+  sync-gantt:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Crear archivo .env
+        run: |
+          cat > .env << EOF
+          CONFLUENCE_URL=${{ secrets.CONFLUENCE_URL }}
+          CONFLUENCE_USER=${{ secrets.CONFLUENCE_USER }}
+          CONFLUENCE_API_TOKEN=${{ secrets.CONFLUENCE_API_TOKEN }}
+          CLICKUP_API_TOKEN=${{ secrets.CLICKUP_API_TOKEN }}
+          CLICKUP_LIST_ID=${{ secrets.CLICKUP_LIST_ID }}
+          CLICKUP_LIST_ID_1=${{ secrets.CLICKUP_LIST_ID_1 }}
+          CLICKUP_FOLDER_ID=${{ secrets.CLICKUP_FOLDER_ID }}
+          CLICKUP_FOLDER_ID_1=${{ secrets.CLICKUP_FOLDER_ID_1 }}
+          CONFLUENCE_PAGE_ID=${{ secrets.CONFLUENCE_PAGE_ID }}
+          CONFLUENCE_PAGE_ID_1=${{ secrets.CONFLUENCE_PAGE_ID_1 }}
+          PROJECT_NAME=${{ secrets.PROJECT_NAME }}
+          PROJECT_NAME_1=${{ secrets.PROJECT_NAME_1 }}
+          CLICKUP_LIST_ID_2=${{ secrets.CLICKUP_LIST_ID_2 }}
+          CLICKUP_FOLDER_ID_2=${{ secrets.CLICKUP_FOLDER_ID_2 }}
+          CONFLUENCE_PAGE_ID_2=${{ secrets.CONFLUENCE_PAGE_ID_2 }}
+          PROJECT_NAME_2=${{ secrets.PROJECT_NAME_2 }}
+          CLICKUP_LIST_ID_3=${{ secrets.CLICKUP_LIST_ID_3 }}
+          CLICKUP_FOLDER_ID_3=${{ secrets.CLICKUP_FOLDER_ID_3 }}
+          CONFLUENCE_PAGE_ID_3=${{ secrets.CONFLUENCE_PAGE_ID_3 }}
+          PROJECT_NAME_3=${{ secrets.PROJECT_NAME_3 }}
+          CLICKUP_LIST_ID_4=${{ secrets.CLICKUP_LIST_ID_4 }}
+          CLICKUP_FOLDER_ID_4=${{ secrets.CLICKUP_FOLDER_ID_4 }}
+          CONFLUENCE_PAGE_ID_4=${{ secrets.CONFLUENCE_PAGE_ID_4 }}
+          PROJECT_NAME_4=${{ secrets.PROJECT_NAME_4 }}
+          CLICKUP_LIST_ID_5=${{ secrets.CLICKUP_LIST_ID_5 }}
+          CLICKUP_FOLDER_ID_5=${{ secrets.CLICKUP_FOLDER_ID_5 }}
+          CONFLUENCE_PAGE_ID_5=${{ secrets.CONFLUENCE_PAGE_ID_5 }}
+          PROJECT_NAME_5=${{ secrets.PROJECT_NAME_5 }}
+          EOF
+
+      - name: Ejecutar sincronización
+        run: |
+          python scripts/gantt-click-conf.py
+
+      - name: Notificar resultado
+        if: success()
+        run: |
+          echo "✅ Sincronización completada exitosamente"
+
